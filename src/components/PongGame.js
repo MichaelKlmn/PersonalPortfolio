@@ -1,52 +1,34 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
+import "../App.css";
 
 const PongGame = () => {
   const canvasRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [message, setMessage] = useState("Click START to Play Pong 🎮");
-  const [playerScore, setPlayerScore] = useState(0);
-  const [aiScore, setAiScore] = useState(0);
+  const requestRef = useRef();
+  const keys = useRef({});
 
   useEffect(() => {
-    if (!isPlaying) return;
-
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
+    canvas.width = 600;
+    canvas.height = 400;
 
-    // Responsive scaling
-    const baseWidth = 800;
-    const baseHeight = 500;
-    const scale = Math.min(window.innerWidth / 1000, 1);
-    canvas.width = baseWidth * scale;
-    canvas.height = baseHeight * scale;
+    // --- Game variables ---
+    let paddleWidth = 10;
+    let paddleHeight = 70;
+    let ballSize = 10;
 
-    // Ball
-    let ball = {
-      x: canvas.width / 2,
-      y: canvas.height / 2,
-      radius: 8 * scale,
-      dx: 4 * scale,
-      dy: 4 * scale,
-    };
+    let playerY = canvas.height / 2 - paddleHeight / 2;
+    let aiY = canvas.height / 2 - paddleHeight / 2;
+    let ballX = canvas.width / 2;
+    let ballY = canvas.height / 2;
+    let ballSpeedX = 4;
+    let ballSpeedY = 0;
+    let playerScore = 0;
+    let aiScore = 0;
+    let countdown = 0;
+    let gameStarted = false;
 
-    // Paddles
-    const paddleWidth = 10 * scale;
-    const paddleHeight = 80 * scale;
-    const player = {
-      x: 10 * scale,
-      y: canvas.height / 2 - paddleHeight / 2,
-      dy: 0,
-    };
-    const ai = {
-      x: canvas.width - 20 * scale,
-      y: canvas.height / 2 - paddleHeight / 2,
-      dy: 4 * scale,
-    };
-
-    let pScore = 0;
-    let aScore = 0;
-    let gameRunning = true;
-
+    // --- Drawing helpers ---
     const drawRect = (x, y, w, h, color) => {
       ctx.fillStyle = color;
       ctx.fillRect(x, y, w, h);
@@ -55,173 +37,198 @@ const PongGame = () => {
     const drawCircle = (x, y, r, color) => {
       ctx.fillStyle = color;
       ctx.beginPath();
-      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.arc(x, y, r, 0, Math.PI * 2, false);
       ctx.closePath();
       ctx.fill();
     };
 
-    const drawNet = () => {
-      for (let i = 0; i < canvas.height; i += 20 * scale) {
-        drawRect(canvas.width / 2 - 1, i, 2, 10 * scale, "#fff");
-      }
-    };
-
-    const drawText = (text, x, y, size = 24) => {
-      ctx.fillStyle = "#fff";
-      ctx.font = `${size * scale}px Arial`;
+    const drawText = (text, x, y, color, size = 20, align = "left") => {
+      ctx.fillStyle = color;
+      ctx.font = `${size}px Inter`;
+      ctx.textAlign = align;
       ctx.fillText(text, x, y);
     };
 
+    // --- Reset ball with countdown ---
     const resetBall = () => {
-      ball.x = canvas.width / 2;
-      ball.y = canvas.height / 2;
-      ball.dx = -ball.dx;
-      ball.dy = 4 * scale * (Math.random() > 0.5 ? 1 : -1);
+      ballX = canvas.width / 2;
+      ballY = canvas.height / 2;
+      ballSpeedX = -ballSpeedX;
+      ballSpeedY = 0;
+      countdown = 3; // countdown before serve
     };
 
-    const keyDownHandler = (e) => {
-      if (e.key === "ArrowUp") player.dy = -6 * scale;
-      if (e.key === "ArrowDown") player.dy = 6 * scale;
-    };
+    // --- Game Loop ---
+    const gameLoop = () => {
+      // --- Clear screen ---
+      drawRect(0, 0, canvas.width, canvas.height, "#ffffff");
 
-    const keyUpHandler = (e) => {
-      if (e.key === "ArrowUp" || e.key === "ArrowDown") player.dy = 0;
-    };
+      // --- If game not started yet ---
+      if (!gameStarted) {
+        drawText(
+          "Click to Start",
+          canvas.width / 2,
+          canvas.height / 2,
+          "#555",
+          22,
+          "center"
+        );
+        requestRef.current = requestAnimationFrame(gameLoop);
+        return;
+      }
 
-    document.addEventListener("keydown", keyDownHandler);
-    document.addEventListener("keyup", keyUpHandler);
+      // --- Countdown phase ---
+      if (countdown > 0) {
+        drawText(
+          Math.ceil(countdown),
+          canvas.width / 2,
+          canvas.height / 2,
+          "#7a00cc",
+          48,
+          "center"
+        );
+        countdown -= 0.03; // decrease roughly once per frame
+        drawRect(0, playerY, paddleWidth, paddleHeight, "#7a00cc");
+        drawRect(
+          canvas.width - paddleWidth,
+          aiY,
+          paddleWidth,
+          paddleHeight,
+          "#7a00cc"
+        );
+        drawText(playerScore, canvas.width / 4, 40, "#7a00cc", 22, "center");
+        drawText(aiScore, (3 * canvas.width) / 4, 40, "#7a00cc", 22, "center");
+        requestRef.current = requestAnimationFrame(gameLoop);
+        return;
+      }
 
-    const update = () => {
-      if (!gameRunning) return;
+      // --- "GO!" phase for 1 second ---
+      if (countdown <= 0 && countdown > -1) {
+        drawText(
+          "GO!",
+          canvas.width / 2,
+          canvas.height / 2,
+          "#7a00cc",
+          40,
+          "center"
+        );
+        drawRect(0, playerY, paddleWidth, paddleHeight, "#7a00cc");
+        drawRect(
+          canvas.width - paddleWidth,
+          aiY,
+          paddleWidth,
+          paddleHeight,
+          "#7a00cc"
+        );
+        drawText(playerScore, canvas.width / 4, 40, "#7a00cc", 22, "center");
+        drawText(aiScore, (3 * canvas.width) / 4, 40, "#7a00cc", 22, "center");
+        countdown -= 0.03;
+        requestRef.current = requestAnimationFrame(gameLoop);
+        return;
+      }
 
-      ball.x += ball.dx;
-      ball.y += ball.dy;
-      player.y += player.dy;
+      // --- Launch ball after countdown + GO phase ---
+      if (countdown <= -1 && ballSpeedY === 0) {
+        ballSpeedY = 4 * (Math.random() > 0.5 ? 1 : -1);
+      }
 
-      // Collision with walls
-      if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0)
-        ball.dy = -ball.dy;
+      // --- Player movement ---
+      if (keys.current["ArrowUp"] && playerY > 0) playerY -= 6;
+      if (keys.current["ArrowDown"] && playerY < canvas.height - paddleHeight)
+        playerY += 6;
 
-      // Paddle collision
-      let paddle = ball.x < canvas.width / 2 ? player : ai;
+      // --- Smooth AI movement ---
+      const reactionSpeed = 0.07; // smaller = slower AI reaction
+      const targetY = ballY - paddleHeight / 2;
+      aiY += (targetY - aiY) * reactionSpeed;
+      aiY = Math.max(0, Math.min(aiY, canvas.height - paddleHeight));
+
+      // --- Move ball ---
+      ballX += ballSpeedX;
+      ballY += ballSpeedY;
+
+      // --- Wall collision (top/bottom) ---
+      if (ballY - ballSize < 0 || ballY + ballSize > canvas.height) {
+        ballSpeedY = -ballSpeedY;
+      }
+
+      // --- Player paddle collision ---
       if (
-        ball.x - ball.radius < paddle.x + paddleWidth &&
-        ball.x + ball.radius > paddle.x &&
-        ball.y < paddle.y + paddleHeight &&
-        ball.y > paddle.y
+        ballSpeedX < 0 &&
+        ballX - ballSize <= paddleWidth &&
+        ballY > playerY &&
+        ballY < playerY + paddleHeight
       ) {
-        ball.dx = -ball.dx;
+        ballX = paddleWidth + ballSize;
+        ballSpeedX = -ballSpeedX;
+        ballSpeedY += (Math.random() - 0.5) * 2;
       }
 
-      // Scoring
-      if (ball.x - ball.radius < 0) {
-        aScore++;
-        setAiScore(aScore);
+      // --- AI paddle collision ---
+      if (
+        ballSpeedX > 0 &&
+        ballX + ballSize >= canvas.width - paddleWidth &&
+        ballY > aiY &&
+        ballY < aiY + paddleHeight
+      ) {
+        ballX = canvas.width - paddleWidth - ballSize;
+        ballSpeedX = -ballSpeedX;
+        ballSpeedY += (Math.random() - 0.5) * 2;
+      }
+
+      // --- Scoring (only count when ball leaves play area) ---
+      if (ballX + ballSize < 0) {
+        aiScore++;
         resetBall();
-      } else if (ball.x + ball.radius > canvas.width) {
-        pScore++;
-        setPlayerScore(pScore);
+      } else if (ballX - ballSize > canvas.width) {
+        playerScore++;
         resetBall();
       }
 
-      // AI tracking
-      if (ai.y + paddleHeight / 2 < ball.y) ai.y += ai.dy;
-      else ai.y -= ai.dy;
+      // --- Draw everything ---
+      drawRect(0, playerY, paddleWidth, paddleHeight, "#7a00cc");
+      drawRect(
+        canvas.width - paddleWidth,
+        aiY,
+        paddleWidth,
+        paddleHeight,
+        "#7a00cc"
+      );
+      drawCircle(ballX, ballY, ballSize, "#7a00cc");
+      drawText(playerScore, canvas.width / 4, 40, "#7a00cc", 22, "center");
+      drawText(aiScore, (3 * canvas.width) / 4, 40, "#7a00cc", 22, "center");
 
-      // Prevent paddles from leaving screen
-      player.y = Math.max(Math.min(player.y, canvas.height - paddleHeight), 0);
-      ai.y = Math.max(Math.min(ai.y, canvas.height - paddleHeight), 0);
+      requestRef.current = requestAnimationFrame(gameLoop);
+    };
 
-      // Win check
-      if (pScore >= 5 || aScore >= 5) {
-        gameRunning = false;
-        setMessage(pScore >= 5 ? "🏆 You Win!" : "💀 You Lose!");
-        setIsPlaying(false);
+    // --- Controls ---
+    const keyDown = (e) => (keys.current[e.key] = true);
+    const keyUp = (e) => (keys.current[e.key] = false);
+    document.addEventListener("keydown", keyDown);
+    document.addEventListener("keyup", keyUp);
+
+    // --- Start game on click ---
+    const startGame = () => {
+      if (!gameStarted) {
+        gameStarted = true;
+        countdown = 3; // Start countdown on click
       }
     };
 
-    const render = () => {
-      drawRect(0, 0, canvas.width, canvas.height, "#111");
-      drawNet();
-      drawText(playerScore, canvas.width / 4, 40 * scale, 28);
-      drawText(aiScore, (3 * canvas.width) / 4, 40 * scale, 28);
-      drawRect(player.x, player.y, paddleWidth, paddleHeight, "#09f");
-      drawRect(ai.x, ai.y, paddleWidth, paddleHeight, "#f33");
-      drawCircle(ball.x, ball.y, ball.radius, "#fff");
-    };
+    canvas.addEventListener("click", startGame);
 
-    const loop = () => {
-      update();
-      render();
-      if (isPlaying) requestAnimationFrame(loop);
-    };
-
-    loop();
+    // --- Start loop ---
+    requestRef.current = requestAnimationFrame(gameLoop);
 
     return () => {
-      document.removeEventListener("keydown", keyDownHandler);
-      document.removeEventListener("keyup", keyUpHandler);
+      cancelAnimationFrame(requestRef.current);
+      document.removeEventListener("keydown", keyDown);
+      document.removeEventListener("keyup", keyUp);
+      canvas.removeEventListener("click", startGame);
     };
-  }, [isPlaying]);
+  }, []);
 
-  const handleStart = () => {
-    setPlayerScore(0);
-    setAiScore(0);
-    setMessage("");
-    setIsPlaying(true);
-  };
-
-  return (
-    <div
-      style={{
-        margin: "40px auto",
-        width: "90%",
-        maxWidth: "900px",
-        background: "#1c1c1c",
-        borderRadius: "16px",
-        padding: "20px",
-        textAlign: "center",
-        boxShadow: "0 0 20px rgba(0,0,0,0.4)",
-      }}
-    >
-      <h2 style={{ color: "white", fontFamily: "Arial" }}>Pong Game 🎮</h2>
-
-      <canvas
-        ref={canvasRef}
-        style={{
-          width: "100%",
-          height: "auto",
-          background: "#000",
-          borderRadius: "10px",
-          border: "3px solid #09f",
-          marginTop: "10px",
-        }}
-      />
-
-      {message && (
-        <p style={{ color: "white", marginTop: "10px", fontSize: "18px" }}>
-          {message}
-        </p>
-      )}
-
-      <button
-        onClick={handleStart}
-        style={{
-          backgroundColor: isPlaying ? "#444" : "#09f",
-          color: "white",
-          border: "none",
-          padding: "10px 20px",
-          borderRadius: "8px",
-          cursor: "pointer",
-          marginTop: "15px",
-          fontSize: "16px",
-        }}
-        disabled={isPlaying}
-      >
-        {isPlaying ? "Playing..." : "Start Game"}
-      </button>
-    </div>
-  );
+  return <canvas ref={canvasRef} className="pong-canvas" />;
 };
 
 export default PongGame;
