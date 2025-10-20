@@ -1,0 +1,270 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600&family=Lato:wght@300;400;700&display=swap");
+
+.App {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #ffffff;
+  font-family: "Inter", "Lato", sans-serif;
+  overflow: hidden;
+}
+
+.divider-full-vertical {
+  position: fixed; /* ensures it's relative to the viewport, not the flexbox */
+  top: 0;
+  bottom: 0;
+  left: 50%; /* true center of the screen */
+  transform: translateX(-50%);
+  width: 5px;
+  background: linear-gradient(180deg, #000 0%, #999 100%);
+  border-radius: 2px;
+  z-index: -1; /* keeps it behind the text */
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1));
+}
+
+.cta-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 40%; /* you can tweak this */
+  position: relative;
+  z-index: 1; /* ensures text is above the divider */
+}
+
+.cta-text {
+  font-size: 2.8rem;
+  font-weight: 300;
+  color: #222;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cta-text:hover {
+  color: #000;
+  transform: translateY(-4px);
+}
+
+.divider {
+  width: 1px;
+  height: 0;
+  background: linear-gradient(to bottom, #000 0%, #777 100%);
+  border-radius: 0px;
+  animation: growLineVertical 1s ease-in-out forwards;
+}
+
+@keyframes growLineVertical {
+  from {
+    height: 0;
+  }
+  to {
+    height: 60px;
+  }
+}
+
+.page-content {
+  text-align: center;
+}
+
+.back-btn {
+  margin-top: 20px;
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  font-size: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  transition: color 0.3s ease;
+}
+
+.back-btn:hover {
+  color: #000;
+}
+
+/* SOFTWARE PAGE */
+.software-page {
+  background: #fff;
+  color: #111;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  padding: 80px 10%;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.page-title {
+  font-family: "Poppins", sans-serif;
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.about-text,
+.about-body {
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 800px;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.section-title {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.6rem;
+  margin-top: 2rem;
+  color: #111;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+  max-width: 900px;
+}
+
+.project-card {
+  background: #f8f8f8;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.project-card:hover {
+  background: #f0f0f0;
+  transform: translateY(-4px);
+}
+
+.project-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.project-card a {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: #0077ff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.project-card a:hover {
+  text-decoration: underline;
+}
+
+/* -------------------- */
+/* HOME PAGE (Restored) */
+/* -------------------- */
+
+.home-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #ffffff;
+  font-family: "Inter", "Lato", sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Center container for the two main choices */
+.cta-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 40%;
+  position: relative;
+  z-index: 1; /* keeps buttons above the divider */
+}
+
+/* Thin vertical divider line (animated) */
+.divider {
+  width: 1px;
+  height: 0;
+  background: linear-gradient(to bottom, #000 0%, #777 100%);
+  border-radius: 0px;
+  animation: growLineVertical 1s ease-in-out forwards;
+}
+
+@keyframes growLineVertical {
+  from {
+    height: 0;
+  }
+  to {
+    height: 60px;
+  }
+}
+
+/* Text buttons for Modelling / Software */
+.cta-text {
+  font-size: 2.8rem;
+  font-weight: 300;
+  color: #222;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cta-text:hover {
+  color: #000;
+  transform: translateY(-4px);
+}
+
+/* Full-length divider (background element) */
+.divider-full-vertical {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.05));
+  border-radius: 2px;
+  z-index: 0;
+}
+
+/* Modeling Section View */
+.modelling-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #fff;
+  color: #222;
+  text-align: center;
+}
+
+.modelling-section h1 {
+  font-size: 2.5rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.modelling-section p {
+  font-size: 1.1rem;
+  font-weight: 300;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.back-btn {
+  margin-top: 30px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  transition: color 0.3s ease;
+}
+
+.back-btn:hover {
+  color: #000;
+}
