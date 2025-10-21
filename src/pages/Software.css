@@ -1,0 +1,220 @@
+/* THEME TOKENS */
+.software-page--dark {
+  --bg: #111; /* dark gray */
+  --bg-elev: #161616;
+  --text: #ececec;
+  --muted: #bdbdbd;
+  --lav: #cbc3e3; /* your lavender */
+  --lav-20: rgba(203, 195, 227, 0.2);
+  --lav-35: rgba(203, 195, 227, 0.35);
+  --lav-55: rgba(203, 195, 227, 0.55);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ---------- HERO ---------- */
+.hero-section {
+  position: relative;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.hero-particles-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.6;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.hero-title {
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(2.2rem, 6vw, 4.2rem);
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: 0.3px;
+}
+.accent {
+  color: var(--lav);
+}
+
+.hero-subtitle {
+  font-family: "Inter", sans-serif;
+  font-size: clamp(1.05rem, 2vw, 1.45rem);
+  color: var(--muted);
+  margin: 0 0 1.4rem 0;
+}
+
+.hero-cta {
+  font-family: "Inter", sans-serif;
+  background: transparent;
+  color: var(--text);
+  border: 2px solid var(--lav);
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+.hero-cta:hover {
+  background: var(--lav);
+  color: #111;
+}
+.hero-cta.ghost {
+  border-color: var(--lav-55);
+}
+.hero-cta.ghost:hover {
+  background: var(--lav-55);
+  color: #111;
+}
+.arrow {
+  margin-left: 6px;
+}
+
+/* ---------- ABOUT ---------- */
+.about-section {
+  padding: 80px 6vw;
+  background: var(--bg);
+}
+.section-heading {
+  width: fit-content;
+  margin: 0 auto 28px auto;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+}
+.section-heading span {
+  box-shadow: inset 0 -10px 0 var(--lav-35);
+  border-radius: 4px;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 48px;
+  align-items: start;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+@media (max-width: 980px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.about-left {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 24px;
+}
+@media (max-width: 980px) {
+  .about-left {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+}
+
+.avatar-outline {
+  display: block;
+}
+.about-blurb {
+  font-family: "Inter", sans-serif;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+.about-right .about-blurb {
+  margin-bottom: 16px;
+}
+.center-btn {
+  display: grid;
+  place-items: center;
+}
+
+/* ---------- SKILLS ---------- */
+.skills-section {
+  padding: 70px 6vw 110px;
+  background: var(--bg);
+}
+
+.skills-grid {
+  max-width: 1100px;
+  margin: 12px auto 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(200px, 1fr));
+  gap: 18px;
+}
+@media (max-width: 900px) {
+  .skills-grid {
+    grid-template-columns: repeat(2, minmax(160px, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.skill-card {
+  background: var(--bg-elev);
+  border-radius: 14px;
+  padding: 18px 16px 14px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--lav-20);
+  transition: transform 0.25s ease, box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+.skill-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    600px 180px at 50% -20%,
+    var(--lav-20),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.skill-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--lav-55);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 0 1px var(--lav-20) inset;
+}
+.skill-card:hover::before {
+  opacity: 1;
+}
+
+.skill-inner {
+  display: grid;
+  place-items: center;
+  height: 120px;
+}
+.skill-icon {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
+}
+
+.skill-label {
+  text-align: center;
+  margin-top: 10px;
+  font-family: "Inter", sans-serif;
+  font-size: 0.95rem;
+  color: var(--text);
+  letter-spacing: 0.2px;
+}
