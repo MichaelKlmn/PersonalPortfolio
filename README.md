@@ -1,3 +1,5 @@
+The website is constantly being improved upon and is a work in progress!
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
