@@ -154,28 +154,19 @@ const Software = () => {
   useEffect(() => {
     if (!showPong) return;
 
-    // lock background scroll
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     const onKeyDown = (e) => {
-      // ESC closes
+      // allow PongGame to handle Arrow keys
       if (e.key === "Escape") {
         e.preventDefault();
         setShowPong(false);
         return;
       }
-      // prevent page scroll / background actions
-      const blocked = [
-        "ArrowUp",
-        "ArrowDown",
-        "ArrowLeft",
-        "ArrowRight",
-        " ",
-        "Spacebar",
-        "PageUp",
-        "PageDown",
-      ];
+
+      // block page scrolling but not ArrowUp/ArrowDown
+      const blocked = [" ", "Spacebar", "PageUp", "PageDown"];
       if (blocked.includes(e.key)) {
         e.preventDefault();
         e.stopPropagation();
@@ -183,7 +174,6 @@ const Software = () => {
     };
 
     window.addEventListener("keydown", onKeyDown, { capture: true });
-
     return () => {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", onKeyDown, { capture: true });
@@ -437,14 +427,35 @@ const Software = () => {
                 </button>
 
                 {/* Game fits perfectly inside */}
-                <div
-                  ref={gameRef}
-                  onKeyDown={(e) => e.stopPropagation()}
-                  tabIndex={0}
-                  style={{ outline: "none" }}
-                >
-                  <PongGame />
-                </div>
+                <PortalModal>
+                  <motion.div
+                    className="pong-modal"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <motion.div
+                      className="pong-modal-content"
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.9, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      style={{ outline: "none" }}
+                    >
+                      <button
+                        className="close-btn"
+                        onClick={() => setShowPong(false)}
+                        aria-label="Close"
+                      >
+                        ✕
+                      </button>
+
+                      {/* 🟢 Forward focus into the canvas inside PongGame */}
+                      <PongGame autoFocus />
+                    </motion.div>
+                  </motion.div>
+                </PortalModal>
               </motion.div>
             </motion.div>
           )}
