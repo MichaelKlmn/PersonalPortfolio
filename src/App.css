@@ -1,300 +1,183 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600&family=Lato:wght@300;400;700&display=swap");
-
+/* ------------------ GLOBAL APP ------------------ */
 .App {
+  min-height: 100vh;
+  background: #fff;
+  font-family: "Inter", "Lato", sans-serif;
+}
+
+/* ------------------ HOME PAGE ------------------ */
+.home-shell {
+  height: 100vh;
+  width: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background-color: #ffffff;
-  font-family: "Inter", "Lato", sans-serif;
+  position: relative;
   overflow: hidden;
 }
 
-.divider-full-vertical {
-  position: fixed; /* ensures it's relative to the viewport, not the flexbox */
-  top: 0;
-  bottom: 0;
-  left: 50%; /* true center of the screen */
-  transform: translateX(-50%);
-  width: 5px;
-  background: linear-gradient(180deg, #000 0%, #999 100%);
-  border-radius: 2px;
-  z-index: -1; /* keeps it behind the text */
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1));
-}
-
-.cta-container {
+.home-shell .cta-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 40%; /* you can tweak this */
+  width: min(85vw, 1100px);
   position: relative;
-  z-index: 1; /* ensures text is above the divider */
+  z-index: 1;
 }
 
-.cta-text {
-  font-size: 2.8rem;
-  font-weight: 300;
-  color: #222;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.cta-text:hover {
-  color: #000;
-  transform: translateY(-4px);
-}
-
-.divider {
-  width: 1px;
-  height: 0;
-  background: linear-gradient(to bottom, #000 0%, #777 100%);
-  border-radius: 0px;
-  animation: growLineVertical 1s ease-in-out forwards;
-}
-
-@keyframes growLineVertical {
-  from {
-    height: 0;
-  }
-  to {
-    height: 60px;
-  }
-}
-
-.page-content {
-  text-align: center;
-}
-
-.back-btn {
-  margin-top: 20px;
-  font-family: "Inter", sans-serif;
-  font-weight: 300;
-  font-size: 1rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #555;
-  transition: color 0.3s ease;
-}
-
-.back-btn:hover {
-  color: #000;
-}
-
-/* SOFTWARE PAGE */
-.software-page {
-  background: #fff;
-  color: #111;
+.home-shell .cta-side {
+  flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-direction: column;
-  padding: 80px 10%;
-  height: 100vh;
-  overflow-y: auto;
-}
-
-.page-title {
-  font-family: "Poppins", sans-serif;
-  font-size: 2.8rem;
-  margin-bottom: 1rem;
-  font-weight: 600;
-}
-
-.about-text,
-.about-body {
-  font-family: "Inter", sans-serif;
-  font-weight: 300;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  max-width: 800px;
-  margin-bottom: 1rem;
   align-items: center;
 }
 
-.section-title {
-  font-family: "Poppins", sans-serif;
-  font-size: 1.6rem;
-  margin-top: 2rem;
+.home-shell .cta-side.left {
+  justify-content: flex-end;
+  padding-right: 80px;
+}
+
+.home-shell .cta-side.right {
+  justify-content: flex-start;
+  padding-left: 80px;
+}
+
+.home-shell .cta-text {
+  font-size: 2.8rem;
+  font-weight: 300;
+  color: #222;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+  z-index: 1;
+  transition: all 0.25s ease;
+}
+
+.home-shell .cta-text:hover {
+  color: #000;
+  transform: translateY(-3px);
+}
+
+/* Divider animation element */
+.home-shell .divider-full-vertical {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center center;
+  width: 8px;
+  height: 100vh;
+  background: linear-gradient(
+    180deg,
+    rgba(140, 140, 140, 1),
+    rgba(80, 80, 80, 0.8)
+  );
+  border-radius: 6px;
+  box-shadow: 0 0 25px rgba(60, 60, 60, 0.4);
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .home-shell .cta-container {
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 90vw;
+  }
+
+  .home-shell .cta-side.left {
+    justify-content: center;
+    padding-right: 0;
+  }
+
+  .home-shell .cta-side.right {
+    justify-content: center;
+    padding-left: 0;
+  }
+}
+
+/* ------------------ SOFTWARE PAGE ------------------ */
+.software-page {
+  padding: 80px 12%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fafafa;
   color: #111;
 }
 
-.projects-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1rem;
+.software-title {
+  font-size: 2.6rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.software-description {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  max-width: 700px;
+  color: #444;
+}
+
+/* Cards grid */
+.software-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
   max-width: 900px;
 }
 
-.project-card {
-  background: #f8f8f8;
-  border-radius: 12px;
-  padding: 20px;
-  text-align: left;
-  transition: all 0.3s ease;
+.software-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 36px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s ease;
+  cursor: pointer;
 }
 
-.project-card:hover {
-  background: #f0f0f0;
+.software-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 }
 
-.project-card h3 {
+.software-card-content {
+  flex: 1;
+}
+
+.software-card h3 {
   font-size: 1.3rem;
   margin-bottom: 0.5rem;
 }
 
-.project-card a {
-  display: inline-block;
-  margin-top: 0.5rem;
-  color: #0077ff;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.project-card a:hover {
-  text-decoration: underline;
-}
-
-/* -------------------- */
-/* HOME PAGE (Restored) */
-/* -------------------- */
-
-.home-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #ffffff;
-  font-family: "Inter", "Lato", sans-serif;
-  overflow: hidden;
-  position: relative;
-}
-
-/* Center container for the two main choices */
-.cta-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 40%;
-  position: relative;
-  z-index: 1; /* keeps buttons above the divider */
-}
-
-/* Thin vertical divider line (animated) */
-.divider {
-  width: 1px;
-  height: 0;
-  background: linear-gradient(to bottom, #000 0%, #777 100%);
-  border-radius: 0px;
-  animation: growLineVertical 1s ease-in-out forwards;
-}
-
-@keyframes growLineVertical {
-  from {
-    height: 0;
-  }
-  to {
-    height: 60px;
-  }
-}
-
-/* Text buttons for Modelling / Software */
-.cta-text {
-  font-size: 2.8rem;
-  font-weight: 300;
-  color: #222;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.cta-text:hover {
-  color: #000;
-  transform: translateY(-4px);
-}
-
-/* Full-length divider (background element) */
-.divider-full-vertical {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.05));
-  border-radius: 2px;
-  z-index: 0;
-}
-
-/* Modeling Section View */
-.modelling-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background: #fff;
-  color: #222;
-  text-align: center;
-}
-
-.modelling-section h1 {
-  font-size: 2.5rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-}
-
-.modelling-section p {
-  font-size: 1.1rem;
-  font-weight: 300;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.back-btn {
-  margin-top: 30px;
-  font-family: "Inter", sans-serif;
-  font-weight: 400;
-  font-size: 1rem;
-  background: none;
-  border: none;
-  cursor: pointer;
+.software-card p {
   color: #555;
-  transition: color 0.3s ease;
+  line-height: 1.4;
+  font-size: 0.95rem;
 }
 
-.back-btn:hover {
-  color: #000;
+.software-card img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 12px;
+  margin-left: 30px;
 }
 
-/* PONG STYLING */
-.pong-canvas {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
+@media (max-width: 768px) {
+  .software-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-.pong-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(8px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
-}
-
-.pong-modal {
-  background: #ffffff;
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  max-width: 650px;
+  .software-card img {
+    margin-left: 0;
+    margin-top: 20px;
+  }
 }

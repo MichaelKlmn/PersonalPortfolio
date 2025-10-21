@@ -12,23 +12,23 @@ const PongGame = () => {
     canvas.width = 600;
     canvas.height = 400;
 
-    // --- Game variables ---
-    let paddleWidth = 10;
-    let paddleHeight = 70;
-    let ballSize = 10;
+    const paddleWidth = 10;
+    const paddleHeight = 70;
+    const ballSize = 10;
 
     let playerY = canvas.height / 2 - paddleHeight / 2;
     let aiY = canvas.height / 2 - paddleHeight / 2;
     let ballX = canvas.width / 2;
     let ballY = canvas.height / 2;
     let ballSpeedX = 4;
-    let ballSpeedY = 0;
+    let ballSpeedY = 4;
     let playerScore = 0;
     let aiScore = 0;
-    let countdown = 0;
-    let gameStarted = false;
+    let countdown = 3;
+    let countdownActive = true;
+    let countdownStarted = false;
+    let justBounced = 0; // number of frames since last paddle collision
 
-    // --- Drawing helpers ---
     const drawRect = (x, y, w, h, color) => {
       ctx.fillStyle = color;
       ctx.fillRect(x, y, w, h);
@@ -37,194 +37,171 @@ const PongGame = () => {
     const drawCircle = (x, y, r, color) => {
       ctx.fillStyle = color;
       ctx.beginPath();
-      ctx.arc(x, y, r, 0, Math.PI * 2, false);
+      ctx.arc(x, y, r, 0, Math.PI * 2);
       ctx.closePath();
       ctx.fill();
     };
 
-    const drawText = (text, x, y, color, size = 20, align = "left") => {
+    const drawText = (text, x, y, color, size = "20px", align = "left") => {
       ctx.fillStyle = color;
-      ctx.font = `${size}px Inter`;
+      ctx.font = `${size} Inter`;
       ctx.textAlign = align;
       ctx.fillText(text, x, y);
     };
 
-    // --- Reset ball with countdown ---
     const resetBall = () => {
       ballX = canvas.width / 2;
       ballY = canvas.height / 2;
-      ballSpeedX = -ballSpeedX;
-      ballSpeedY = 0;
-      countdown = 3; // countdown before serve
+      ballSpeedX = (Math.random() > 0.5 ? 1 : -1) * 4;
+      ballSpeedY = (Math.random() > 0.5 ? 1 : -1) * 4;
+      justBounced = 0;
     };
 
-    // --- Game Loop ---
+    const startCountdown = () => {
+      if (countdownStarted) return;
+      countdownStarted = true;
+
+      const timer = setInterval(() => {
+        countdown -= 1;
+        if (countdown <= 0) {
+          clearInterval(timer);
+          countdownActive = false;
+        }
+      }, 1000);
+    };
+
     const gameLoop = () => {
-      // --- Clear screen ---
-      drawRect(0, 0, canvas.width, canvas.height, "#ffffff");
+      // Draw background
+      drawRect(0, 0, canvas.width, canvas.height, "black");
 
-      // --- If game not started yet ---
-      if (!gameStarted) {
+      // Countdown display
+      if (countdownActive) {
+        ctx.textAlign = "center";
         drawText(
-          "Click to Start",
+          countdown > 0 ? countdown : "GO!",
           canvas.width / 2,
           canvas.height / 2,
-          "#555",
-          22,
+          "white",
+          "50px",
           "center"
         );
         requestRef.current = requestAnimationFrame(gameLoop);
         return;
       }
 
-      // --- Countdown phase ---
-      if (countdown > 0) {
-        drawText(
-          Math.ceil(countdown),
-          canvas.width / 2,
-          canvas.height / 2,
-          "#7a00cc",
-          48,
-          "center"
-        );
-        countdown -= 0.03; // decrease roughly once per frame
-        drawRect(0, playerY, paddleWidth, paddleHeight, "#7a00cc");
-        drawRect(
-          canvas.width - paddleWidth,
-          aiY,
-          paddleWidth,
-          paddleHeight,
-          "#7a00cc"
-        );
-        drawText(playerScore, canvas.width / 4, 40, "#7a00cc", 22, "center");
-        drawText(aiScore, (3 * canvas.width) / 4, 40, "#7a00cc", 22, "center");
-        requestRef.current = requestAnimationFrame(gameLoop);
-        return;
-      }
-
-      // --- "GO!" phase for 1 second ---
-      if (countdown <= 0 && countdown > -1) {
-        drawText(
-          "GO!",
-          canvas.width / 2,
-          canvas.height / 2,
-          "#7a00cc",
-          40,
-          "center"
-        );
-        drawRect(0, playerY, paddleWidth, paddleHeight, "#7a00cc");
-        drawRect(
-          canvas.width - paddleWidth,
-          aiY,
-          paddleWidth,
-          paddleHeight,
-          "#7a00cc"
-        );
-        drawText(playerScore, canvas.width / 4, 40, "#7a00cc", 22, "center");
-        drawText(aiScore, (3 * canvas.width) / 4, 40, "#7a00cc", 22, "center");
-        countdown -= 0.03;
-        requestRef.current = requestAnimationFrame(gameLoop);
-        return;
-      }
-
-      // --- Launch ball after countdown + GO phase ---
-      if (countdown <= -1 && ballSpeedY === 0) {
-        ballSpeedY = 4 * (Math.random() > 0.5 ? 1 : -1);
-      }
-
-      // --- Player movement ---
+      // Player movement
       if (keys.current["ArrowUp"] && playerY > 0) playerY -= 6;
       if (keys.current["ArrowDown"] && playerY < canvas.height - paddleHeight)
         playerY += 6;
 
-      // --- Smooth AI movement ---
-      const reactionSpeed = 0.07; // smaller = slower AI reaction
+      // AI movement
       const targetY = ballY - paddleHeight / 2;
-      aiY += (targetY - aiY) * reactionSpeed;
+      aiY += (targetY - aiY) * 0.07;
       aiY = Math.max(0, Math.min(aiY, canvas.height - paddleHeight));
 
-      // --- Move ball ---
+      // Move ball
       ballX += ballSpeedX;
       ballY += ballSpeedY;
+      if (justBounced > 0) justBounced--; // cooldown countdown
 
-      // --- Wall collision (top/bottom) ---
-      if (ballY - ballSize < 0 || ballY + ballSize > canvas.height) {
+      // --- Bounce off top/bottom walls ---
+      if (ballY - ballSize < 0) {
+        ballY = ballSize; // nudge back inside
+        ballSpeedY = -ballSpeedY; // invert velocity
+      } else if (ballY + ballSize > canvas.height) {
+        ballY = canvas.height - ballSize; // nudge inside bottom
         ballSpeedY = -ballSpeedY;
       }
 
-      // --- Player paddle collision ---
+      // --- Paddle collisions ---
+      // Use overlap with the ball's radius and direction checks
+      let bouncedThisFrame = false;
+
+      // Player paddle (ball moving left)
       if (
-        ballSpeedX < 0 &&
         ballX - ballSize <= paddleWidth &&
-        ballY > playerY &&
-        ballY < playerY + paddleHeight
+        ballSpeedX < 0 &&
+        ballY + ballSize >= playerY &&
+        ballY - ballSize <= playerY + paddleHeight
       ) {
-        ballX = paddleWidth + ballSize;
-        ballSpeedX = -ballSpeedX;
+        ballX = paddleWidth + ballSize; // nudge out
+        ballSpeedX = Math.abs(ballSpeedX); // bounce right
         ballSpeedY += (Math.random() - 0.5) * 2;
+        justBounced = 10;
+        bouncedThisFrame = true;
       }
 
-      // --- AI paddle collision ---
-      if (
-        ballSpeedX > 0 &&
+      // AI paddle (ball moving right)
+      else if (
         ballX + ballSize >= canvas.width - paddleWidth &&
-        ballY > aiY &&
-        ballY < aiY + paddleHeight
+        ballSpeedX > 0 &&
+        ballY + ballSize >= aiY &&
+        ballY - ballSize <= aiY + paddleHeight
       ) {
-        ballX = canvas.width - paddleWidth - ballSize;
-        ballSpeedX = -ballSpeedX;
+        ballX = canvas.width - paddleWidth - ballSize; // nudge in
+        ballSpeedX = -Math.abs(ballSpeedX); // bounce left
         ballSpeedY += (Math.random() - 0.5) * 2;
+        justBounced = 10;
+        bouncedThisFrame = true;
       }
 
-      // --- Scoring (only count when ball leaves play area) ---
-      if (ballX + ballSize < 0) {
-        aiScore++;
-        resetBall();
-      } else if (ballX - ballSize > canvas.width) {
-        playerScore++;
-        resetBall();
+      // --- Scoring (AFTER collision, with direction + margin)
+      // Only score if we did NOT bounce this frame, the ball is fully past the wall,
+      // AND it's still moving in that direction.
+      if (!bouncedThisFrame && justBounced === 0) {
+        if (ballX > canvas.width + ballSize * 2 && ballSpeedX > 0) {
+          playerScore++;
+          resetBall();
+        } else if (ballX < -ballSize * 2 && ballSpeedX < 0) {
+          aiScore++;
+          resetBall();
+        }
       }
 
-      // --- Draw everything ---
-      drawRect(0, playerY, paddleWidth, paddleHeight, "#7a00cc");
+      // Draw paddles and ball
+      drawRect(0, playerY, paddleWidth, paddleHeight, "white");
       drawRect(
         canvas.width - paddleWidth,
         aiY,
         paddleWidth,
         paddleHeight,
-        "#7a00cc"
+        "white"
       );
-      drawCircle(ballX, ballY, ballSize, "#7a00cc");
-      drawText(playerScore, canvas.width / 4, 40, "#7a00cc", 22, "center");
-      drawText(aiScore, (3 * canvas.width) / 4, 40, "#7a00cc", 22, "center");
+      drawCircle(ballX, ballY, ballSize, "white");
 
+      // Draw scores
+      ctx.textAlign = "center";
+      drawText(playerScore, canvas.width / 4, 40, "white", "24px", "center");
+      drawText(aiScore, (3 * canvas.width) / 4, 40, "white", "24px", "center");
+
+      // Loop
       requestRef.current = requestAnimationFrame(gameLoop);
     };
 
-    // --- Controls ---
-    const keyDown = (e) => (keys.current[e.key] = true);
-    const keyUp = (e) => (keys.current[e.key] = false);
-    document.addEventListener("keydown", keyDown);
-    document.addEventListener("keyup", keyUp);
+    // Start countdown once
+    startCountdown();
 
-    // --- Start game on click ---
-    const startGame = () => {
-      if (!gameStarted) {
-        gameStarted = true;
-        countdown = 3; // Start countdown on click
-      }
-    };
+    // Keyboard controls
+    document.addEventListener("keydown", (e) => {
+      if (["ArrowUp", "ArrowDown"].includes(e.key)) e.preventDefault();
+      keys.current[e.key] = true;
+    });
+    document.addEventListener("keyup", (e) => (keys.current[e.key] = false));
 
-    canvas.addEventListener("click", startGame);
-
-    // --- Start loop ---
+    // Start loop
     requestRef.current = requestAnimationFrame(gameLoop);
 
+    // Cleanup
     return () => {
       cancelAnimationFrame(requestRef.current);
-      document.removeEventListener("keydown", keyDown);
-      document.removeEventListener("keyup", keyUp);
-      canvas.removeEventListener("click", startGame);
+      document.removeEventListener(
+        "keydown",
+        (e) => (keys.current[e.key] = true)
+      );
+      document.removeEventListener(
+        "keyup",
+        (e) => (keys.current[e.key] = false)
+      );
     };
   }, []);
 
