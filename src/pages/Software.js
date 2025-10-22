@@ -1,143 +1,10 @@
 import React, { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import PongGame from "../components/PongGame"; // <<— use your component directly
+import PongGame from "../components/PongGame";
 import "../App.css";
 import "./Software.css";
 import { createPortal } from "react-dom";
-
-function HeroParticles() {
-  const canvasRef = useRef(null);
-  const mouse = useRef({ x: -9999, y: -9999, radius: 140 });
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    let rafId;
-    let w, h;
-    const DPR = Math.min(window.devicePixelRatio || 1, 2);
-    const NUM = 70;
-    const MAX_SPEED = 0.35;
-    const LINK_DIST = 120;
-    const particles = [];
-
-    function resize() {
-      w = canvas.parentElement.clientWidth;
-      h = canvas.parentElement.clientHeight;
-      canvas.width = Math.floor(w * DPR);
-      canvas.height = Math.floor(h * DPR);
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    }
-
-    function rand(min, max) {
-      return Math.random() * (max - min) + min;
-    }
-
-    function initParticles() {
-      particles.length = 0;
-      for (let i = 0; i < NUM; i++) {
-        particles.push({
-          x: rand(0, w),
-          y: rand(0, h),
-          vx: rand(-MAX_SPEED, MAX_SPEED),
-          vy: rand(-MAX_SPEED, MAX_SPEED),
-          r: rand(1, 2),
-        });
-      }
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, w, h);
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0 || p.x > w) p.vx *= -1;
-        if (p.y < 0 || p.y > h) p.vy *= -1;
-      }
-
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const a = particles[i];
-          const b = particles[j];
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const d = Math.hypot(dx, dy);
-          if (d < LINK_DIST) {
-            const alpha = 0.28 * (1 - d / LINK_DIST);
-            ctx.strokeStyle = `rgba(203,195,227,${alpha})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      if (mouse.current.x > -999) {
-        for (let i = 0; i < particles.length; i++) {
-          const p = particles[i];
-          const dx = p.x - mouse.current.x;
-          const dy = p.y - mouse.current.y;
-          const d = Math.hypot(dx, dy);
-          if (d < mouse.current.radius) {
-            const alpha = 0.35 * (1 - d / mouse.current.radius);
-            ctx.strokeStyle = `rgba(203,195,227,${alpha})`;
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(mouse.current.x, mouse.current.y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        ctx.fillStyle = "rgba(203,195,227,0.65)";
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      rafId = requestAnimationFrame(draw);
-    }
-
-    const onResize = () => {
-      resize();
-      initParticles();
-    };
-
-    const onMove = (e) => {
-      const rect = canvas.getBoundingClientRect();
-      mouse.current.x = e.clientX - rect.left;
-      mouse.current.y = e.clientY - rect.top;
-    };
-
-    const onLeave = () => {
-      mouse.current.x = -9999;
-      mouse.current.y = -9999;
-    };
-
-    resize();
-    initParticles();
-    draw();
-    window.addEventListener("resize", onResize);
-    canvas.addEventListener("mousemove", onMove);
-    canvas.addEventListener("mouseleave", onLeave);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener("resize", onResize);
-      canvas.removeEventListener("mousemove", onMove);
-      canvas.removeEventListener("mouseleave", onLeave);
-    };
-  }, []);
-
-  return <canvas className="hero-particles-canvas" ref={canvasRef} />;
-}
+import HeroParticles from "../components/ParticlesBackground";
 
 function PortalModal({ children }) {
   if (typeof document === "undefined") return null;
@@ -145,10 +12,33 @@ function PortalModal({ children }) {
 }
 
 const Software = () => {
+  const heroRef = useRef(null);
   const aboutRef = useRef(null);
-  const skillsRef = useRef(null);
+  const projectsRef = useRef(null);
+
+  const [showStickyNav, setShowStickyNav] = useState(false);
   const [showPong, setShowPong] = useState(false);
   const gameRef = useRef(null);
+
+  useEffect(() => {
+    const heroSection = heroRef.current;
+    if (!heroSection) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowStickyNav(!entry.isIntersecting),
+      { threshold: 0.25 }
+    );
+    observer.observe(heroSection);
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollToRef = (ref) => {
+    const offset = -50; // adjust if your sticky navbar height changes
+    const element = ref.current;
+    if (element) {
+      const top = element.getBoundingClientRect().top + window.scrollY + offset;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+  };
 
   // Lock scroll + block arrow/space keys + ESC to close while modal open
   useEffect(() => {
@@ -198,8 +88,19 @@ const Software = () => {
 
   return (
     <div className="software-page--dark">
+      <header className={`sticky-nav ${showStickyNav ? "visible" : ""}`}>
+        <nav className="nav-inner">
+          <button onClick={() => (window.location.href = "/")}>
+            Main Page
+          </button>
+          <button onClick={() => scrollToRef(heroRef)}>Home</button>
+          <button onClick={() => scrollToRef(aboutRef)}>About</button>
+          <button onClick={() => scrollToRef(projectsRef)}>Projects</button>
+        </nav>
+      </header>
+
       {/* HERO */}
-      <section className="hero-section">
+      <section className="hero-section" ref={heroRef}>
         <HeroParticles />
         <motion.div
           className="hero-inner"
@@ -210,7 +111,7 @@ const Software = () => {
           <h1 className="hero-title">
             Hello, I’m <span className="accent">Michael</span>.
           </h1>
-          <p className="hero-subtitle">I’m a full-stack software developer.</p>
+          <p className="hero-subtitle">A full-stack software developer.</p>
           <motion.button
             className="hero-cta"
             whileHover={{ y: -2 }}
@@ -222,32 +123,21 @@ const Software = () => {
       </section>
 
       {/* ABOUT */}
-      <section className="about-section" ref={aboutRef}>
-        <h2 className="section-heading">
-          <span>About Me</span>
-        </h2>
-        <h1 className="about-blurb center-align">
-          I'm a fourth-year Seneca Polytechnic student studing software
-          development, I have a strong interest in developing smart,
-          user-centered mobile and web applications. While backend development
-          pushes me to hone my critical-thinking and problem-solving abilities,
-          frontend development allows me to express my creativity through
-          meaningful, effective designs. In order to create smarter, more
-          adaptive user experiences that further stretch my technical and
-          creative limits, I have recently began incorporating AI into my
-          projects.
-        </h1>
-      </section>
-
-      {/* SKILLS */}
-      <section className="skills-section" ref={skillsRef}>
+      <section className="skills-section" ref={aboutRef}>
         <div className="skills-left">
           <h2 className="section-heading">
-            <span>Skills</span>
+            <span>About</span>
           </h2>
-          <h2 className="skills-about-text">
-            Here are a few of my software skills that I have picked up over the
-            years,
+          <h2 className="about-blurb center-align">
+            As a fourth-year software development bachelor student at Seneca
+            Polytechnic, I have a strong interest in creating smart,
+            user-focused web & mobile applications. With backend development
+            pushing my critical thinking and problem solving skills & frontend
+            allowing me to express my creativity through effective designing, I
+            feel as though I am able to have an impact on both sides of the
+            development coin. To further push myself, I have begun to implement
+            more adaptive UI/UX that stretch both my technical and creative
+            limits by incorporating AI into my projects.
           </h2>
         </div>
 
@@ -323,7 +213,7 @@ const Software = () => {
       </section>
 
       {/* PROJECTS */}
-      <section className="projects-section">
+      <section className="projects-section" ref={projectsRef}>
         <h2 className="section-heading">
           <span>Projects</span>
         </h2>

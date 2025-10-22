@@ -1,0 +1,124 @@
+/* Fill the viewport and keep a dark base to avoid white flashes */
+html,
+body {
+  background-color: #0a0a0a;
+  margin: 0;
+  padding: 0;
+}
+
+.home {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000; /* dark fallback while images/canvas initialize */
+}
+
+/* --- BACKGROUND LAYERS (50/50 split) --- */
+.background {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  z-index: 0;
+}
+
+/* --- MODELLING SIDE FIX --- */
+.home .split .modeling-bg {
+  left: 0;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain !important; /* ensures entire body is visible */
+  z-index: 0;
+}
+
+/* Slight zoom adjustment for large screens */
+@media (min-width: 1024px) {
+  .home .split .modeling-bg {
+    background-size: 95% auto !important;
+  }
+}
+
+/* --- SOFTWARE SIDE --- */
+.software-bg {
+  right: 0;
+  background-color: #0a0a0a; /* match Software page base */
+  overflow: hidden;
+}
+
+/* Particle canvas fills the right half */
+.software-bg canvas.hero-particles-canvas,
+.software-bg canvas {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* --- CENTER CONTENT (animated) --- */
+.cta-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 5; /* above backgrounds */
+  width: 80%;
+  max-width: 1200px;
+}
+
+/* --- TEXT FIX --- */
+.cta-text {
+  font-size: 4rem;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease;
+  color: #ffffff !important; /* Force white for visibility */
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+  position: relative;
+  z-index: 3;
+}
+
+/* --- VERTICAL DIVIDER --- */
+.divider-full-vertical {
+  width: 3px;
+  height: 300px;
+  background: linear-gradient(180deg, #555, #999, #555);
+  border-radius: 3px;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .cta-container {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .divider-full-vertical {
+    width: 200px;
+    height: 3px;
+  }
+
+  .cta-text {
+    font-size: 2.5rem;
+  }
+}
+
+/* --- OPTIONAL OVERLAY GRADIENT (adds smooth transition) --- */
+.home .split .modeling-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.3)
+  );
+  z-index: 1;
+}

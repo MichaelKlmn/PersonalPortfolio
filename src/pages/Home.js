@@ -1,8 +1,10 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import "../App.css";
+import HeroParticles from "../components/ParticlesBackground"; // <-- make sure this file exists
+import "./Home.css";
 
 export default function Home({ setSelected }) {
+  // ---------------- Animation variants (unchanged behavior) ----------------
   const dividerVariants = {
     initial: { scaleY: 0, opacity: 0, originY: 0.5 },
     animate: { scaleY: 1, opacity: 1, originY: 0.5 },
@@ -28,11 +30,13 @@ export default function Home({ setSelected }) {
     },
   };
 
+  // ---------------- Local selection for the push-away animation ----------------
   const [selection, setSelection] = React.useState(null);
 
   const handleSelect = (side) => {
     setSelection(side);
-    setTimeout(() => setSelected(side), 800); // delay until animation finishes
+    // allow time for the push-away animation before switching page
+    setTimeout(() => setSelected(side), 800);
   };
 
   return (
@@ -43,12 +47,31 @@ export default function Home({ setSelected }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6 }}
     >
+      {/* ------- BACKGROUND LAYERS ------- */}
+      {/* Left side (Modelling) uses your image from /public/images */}
+      <div
+        className="background modeling-bg"
+        style={{
+          backgroundImage: `url(${process.env.PUBLIC_URL}/images/bottega.png)`,
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center center",
+          backgroundSize: "cover",
+          opacity: 1,
+        }}
+      />
+
+      {/* Right side (Software) uses the same particle background as Software page */}
+      <div className="background software-bg">
+        <HeroParticles />
+      </div>
+
+      {/* ------- CTA / TUG-OF-WAR CONTENT ------- */}
       <div className="cta-container">
-        {/* Left Text */}
+        {/* Left label: Modelling */}
         <AnimatePresence>
           {selection !== "software" && (
             <motion.h1
-              className="cta-text"
+              className="cta-text left-text"
               variants={textVariants}
               initial="initial"
               animate="animate"
@@ -62,7 +85,7 @@ export default function Home({ setSelected }) {
           )}
         </AnimatePresence>
 
-        {/* Divider expanding from center */}
+        {/* Center divider (expands from middle) */}
         <AnimatePresence>
           {!selection && (
             <motion.div
@@ -76,11 +99,11 @@ export default function Home({ setSelected }) {
           )}
         </AnimatePresence>
 
-        {/* Right Text */}
+        {/* Right label: Software */}
         <AnimatePresence>
           {selection !== "modelling" && (
             <motion.h1
-              className="cta-text"
+              className="cta-text right-text"
               variants={textVariants}
               initial="initial"
               animate="animate"

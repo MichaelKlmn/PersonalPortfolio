@@ -22,12 +22,16 @@
   overflow: hidden;
 }
 .hero-particles-canvas {
-  position: absolute;
-  inset: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.6;
+  z-index: 0; /* stays behind content */
+  pointer-events: none;
+  opacity: 0.45; /* adjust intensity */
 }
+
 .hero-inner {
   position: relative;
   z-index: 1;
@@ -95,7 +99,7 @@
   max-width: 850px;
   margin: 0 auto;
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   line-height: 1.8;
   color: #fff;
   opacity: 0.9;
@@ -127,6 +131,7 @@
   display: flex;
   justify-content: flex-end;
   width: 100%;
+  margin-top: 40px; /* ⬅️ adjust this value until cards line up perfectly with text */
 }
 
 /* ========================= COLUMNS ========================= */
@@ -501,4 +506,53 @@
 .section-heading span::after,
 .section-heading::after {
   background: linear-gradient(to right, #ff4d6d, #ff1e56) !important;
+}
+
+/* ─── Sticky Navbar ─────────────────────────────────────── */
+.sticky-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+  transition: opacity 300ms ease, transform 300ms ease;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sticky-nav.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.nav-inner {
+  width: min(1100px, 92%);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-inner button {
+  background: transparent;
+  border: none;
+  color: #eaeaea;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.nav-inner button:hover {
+  color: #009ffd; /* navy-indigo accent */
 }
