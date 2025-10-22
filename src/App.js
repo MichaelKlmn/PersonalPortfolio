@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Home from "./pages/Home";
 import Software from "./pages/Software";
+import Modelling from "./pages/Modelling";
 import "./App.css";
 
 function App() {
@@ -14,17 +15,9 @@ function App() {
       {/* SOFTWARE PAGE */}
       {selected === "software" && <Software onBack={() => setSelected(null)} />}
 
-      {/* MODELLING PAGE (placeholder for now) */}
+      {/* MODELLING PAGE */}
       {selected === "modelling" && (
-        <div className="page-content">
-          <h1>Michael Kleiman | Modelling</h1>
-          <p>
-            Editorial, commercial, and e-commerce work from Canada and abroad.
-          </p>
-          <button className="back-btn" onClick={() => setSelected(null)}>
-            Back
-          </button>
-        </div>
+        <Modelling onBack={() => setSelected(null)} />
       )}
     </div>
   );

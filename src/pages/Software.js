@@ -3,13 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import PongGame from "../components/PongGame";
 import "../App.css";
 import "./Software.css";
-import { createPortal } from "react-dom";
 import HeroParticles from "../components/ParticlesBackground";
-
-function PortalModal({ children }) {
-  if (typeof document === "undefined") return null;
-  return createPortal(children, document.body);
-}
 
 const Software = () => {
   const heroRef = useRef(null);
@@ -322,35 +316,16 @@ const Software = () => {
                 </button>
 
                 {/* Game fits perfectly inside */}
-                <PortalModal>
-                  <motion.div
-                    className="pong-modal"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
+                <div className="pong-modal-content" tabIndex={0} autoFocus>
+                  <button
+                    className="close-btn"
+                    onClick={() => setShowPong(false)}
+                    aria-label="Close"
                   >
-                    <motion.div
-                      className="pong-modal-content"
-                      initial={{ scale: 0.9, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0.9, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      style={{ outline: "none" }}
-                    >
-                      <button
-                        className="close-btn"
-                        onClick={() => setShowPong(false)}
-                        aria-label="Close"
-                      >
-                        ✕
-                      </button>
-
-                      {/* 🟢 Forward focus into the canvas inside PongGame */}
-                      <PongGame autoFocus />
-                    </motion.div>
-                  </motion.div>
-                </PortalModal>
+                    ✕
+                  </button>
+                  <PongGame autoFocus />
+                </div>
               </motion.div>
             </motion.div>
           )}

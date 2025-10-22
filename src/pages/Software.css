@@ -74,6 +74,10 @@
   border-radius: 4px;
 }
 
+.section-heading span::after {
+  background: var(--accent-color);
+}
+
 .section-heading span {
   position: relative;
   z-index: 1;
@@ -131,7 +135,7 @@
   display: flex;
   justify-content: flex-end;
   width: 100%;
-  margin-top: 40px; /* ⬅️ adjust this value until cards line up perfectly with text */
+  margin-top: 80px; /* adjust this value until cards line up perfectly with text */
 }
 
 /* ========================= COLUMNS ========================= */

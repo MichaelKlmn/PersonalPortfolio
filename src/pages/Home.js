@@ -59,16 +59,7 @@ export default function Home({ setSelected }) {
 
       {/* Right side (Software) */}
       {/* Right side (Software) */}
-      <div
-        className="background software-bg"
-        style={{
-          position: "absolute",
-          right: 0,
-          width: "50%",
-          height: "100%",
-          zIndex: 1,
-        }}
-      >
+      <div className="background software-bg">
         <div className="particles-wrapper">
           <HeroParticles />
         </div>
