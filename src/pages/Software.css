@@ -58,13 +58,18 @@
 }
 
 /* ========================= SECTION HEADINGS ========================= */
-.section-heading {
-  font-family: "Poppins", sans-serif;
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
-  width: fit-content;
-  margin-bottom: 1rem;
-  position: relative;
+.section-heading span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 0.35em;
+  background: #ff4d6d; /* solid red accent */
+  z-index: -1;
+  border-radius: 4px;
 }
+
 .section-heading span {
   position: relative;
   z-index: 1;
@@ -491,4 +496,9 @@
 .play-btn:hover {
   background: #cbc3e3;
   color: #0a0a0a;
+}
+
+.section-heading span::after,
+.section-heading::after {
+  background: linear-gradient(to right, #ff4d6d, #ff1e56) !important;
 }

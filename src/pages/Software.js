@@ -224,25 +224,30 @@ const Software = () => {
       {/* ABOUT */}
       <section className="about-section" ref={aboutRef}>
         <h2 className="section-heading">
-          <span>About</span>
+          <span>About Me</span>
         </h2>
         <h1 className="about-blurb center-align">
-          I’m a third-year Software Development student at Seneca Polytechnic,
-          focused on building intelligent, user-centered apps across web and
-          mobile. I enjoy React, Node, MongoDB, and practical ML with Firebase
-          ML Kit.
+          I'm a fourth-year Seneca Polytechnic student studing software
+          development, I have a strong interest in developing smart,
+          user-centered mobile and web applications. While backend development
+          pushes me to hone my critical-thinking and problem-solving abilities,
+          frontend development allows me to express my creativity through
+          meaningful, effective designs. In order to create smarter, more
+          adaptive user experiences that further stretch my technical and
+          creative limits, I have recently began incorporating AI into my
+          projects.
         </h1>
       </section>
 
       {/* SKILLS */}
       <section className="skills-section" ref={skillsRef}>
         <div className="skills-left">
-          <h2 className="section-heading smaller">
-            <span>About</span>
+          <h2 className="section-heading">
+            <span>Skills</span>
           </h2>
           <h2 className="skills-about-text">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec
-            odio. Praesent libero. Sed cursus ante dapibus diam.
+            Here are a few of my software skills that I have picked up over the
+            years,
           </h2>
         </div>
 
