@@ -58,8 +58,20 @@ export default function Home({ setSelected }) {
       />
 
       {/* Right side (Software) */}
-      <div className="background software-bg">
-        <HeroParticles />
+      {/* Right side (Software) */}
+      <div
+        className="background software-bg"
+        style={{
+          position: "absolute",
+          right: 0,
+          width: "50%",
+          height: "100%",
+          zIndex: 1,
+        }}
+      >
+        <div className="particles-wrapper">
+          <HeroParticles />
+        </div>
       </div>
 
       {/* -------- CENTER CONTENT -------- */}
@@ -100,7 +112,7 @@ export default function Home({ setSelected }) {
         <AnimatePresence>
           {selection !== "modelling" && (
             <motion.h1
-              className="cta-text right-text software-text"
+              className="software-text cta-text"
               variants={textVariants}
               initial="initial"
               animate="animate"

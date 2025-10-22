@@ -52,12 +52,12 @@
 }
 
 .cta-text {
+  color: white;
   font-size: 3rem;
   font-weight: 500;
   cursor: pointer;
   user-select: none;
   transition: transform 0.4s ease, color 0.4s ease;
-  color: #ffffff;
 }
 
 .cta-text:hover {
@@ -73,21 +73,16 @@
   color: #333333;
 }
 
-/* Software text - white */
 .software-text {
-  color: white;
+  color: #ffffff !important;
+  text-shadow: 0 0 12px rgba(203, 195, 227, 0.4);
 }
-
 .software-text:hover {
   color: #ffffff;
 }
 
 .left-text {
   text-align: left;
-}
-
-.right-text {
-  text-align: right;
 }
 
 /* Divider animation */
@@ -116,4 +111,22 @@
 
 .home {
   animation: fadeIn 1.2s ease forwards;
+}
+
+/* Particle wrapper — clips particles to Software side */
+.particles-wrapper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.particles-wrapper canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.6; /* adjust particle brightness */
+  pointer-events: none; /* prevents interaction blocking */
 }
