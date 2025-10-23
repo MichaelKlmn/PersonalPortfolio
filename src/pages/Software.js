@@ -260,7 +260,7 @@ const Software = () => {
             </p>
             <div className="project-links">
               <a
-                href="https://github.com/CAPSTONE-2025/Group_19"
+                href="https://github.com/MichaelKlmn/FoodDetectorPublic"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="project-link"
@@ -304,8 +304,8 @@ const Software = () => {
           <div className="project-info">
             <h3 className="project-title">Playable Pong Game</h3>
             <p className="project-desc">
-              A classic Pong arcade game recreated in JavaScript with smooth
-              physics and retro visuals. Try it right here!
+              I grew up playing/loving video games, so I figured I'd try to
+              create the first ever video game! Try it out here!
             </p>
             <div className="project-links">
               <button
