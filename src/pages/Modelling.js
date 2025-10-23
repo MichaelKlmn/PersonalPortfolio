@@ -9,7 +9,17 @@ const Modelling = ({ onBack }) => {
     `${process.env.PUBLIC_URL}/model/video4.mp4`,
   ];
 
-  // start with a randomized queue
+  // shuffle helper
+  function shuffleArray(array) {
+    const newArr = [...array];
+    for (let i = newArr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+    }
+    return newArr;
+  }
+
+  // randomized video queue
   const [videoQueue, setVideoQueue] = useState(shuffleArray(videoPaths));
   const [currentVideo, setCurrentVideo] = useState(0);
   const [nextVideo, setNextVideo] = useState(1);
@@ -22,48 +32,62 @@ const Modelling = ({ onBack }) => {
   const FADE_OFFSET = 1200;
   const INITIAL_FADE_DELAY = 500;
 
-  // IMAGE CAROUSELS
+  // === IMAGE CAROUSELS (Random order like videos) ===
   const ssenseImages = [
     `${process.env.PUBLIC_URL}/model/SSENSE1.png`,
     `${process.env.PUBLIC_URL}/model/SSENSE2.png`,
     `${process.env.PUBLIC_URL}/model/SSENSE3.png`,
+    `${process.env.PUBLIC_URL}/model/SSENSE4.png`,
+    `${process.env.PUBLIC_URL}/model/SSENSE5.png`,
+    `${process.env.PUBLIC_URL}/model/SSENSE6.png`,
+    `${process.env.PUBLIC_URL}/model/SSENSE7.png`,
+    `${process.env.PUBLIC_URL}/model/SSENSE8.png`,
+    `${process.env.PUBLIC_URL}/model/SSENSE9.png`,
+    `${process.env.PUBLIC_URL}/model/SSENSE10.png`,
+    `${process.env.PUBLIC_URL}/model/SSENSE11.png`,
+    `${process.env.PUBLIC_URL}/model/SSENSE12.png`,
+    `${process.env.PUBLIC_URL}/model/SSENSE13.png`,
+    `${process.env.PUBLIC_URL}/model/SSENSE14.png`,
+    `${process.env.PUBLIC_URL}/model/SSENSE15.png`,
   ];
 
   const koreaImages = [
     `${process.env.PUBLIC_URL}/model/KOREA1.png`,
     `${process.env.PUBLIC_URL}/model/KOREA2.png`,
-    `${process.env.PUBLIC_URL}/model/KOREA3.png`,
+    `${process.env.PUBLIC_URL}/model/KOREA4.png`,
+    `${process.env.PUBLIC_URL}/model/KOREA5.png`,
+    `${process.env.PUBLIC_URL}/model/KOREA6.png`,
+    `${process.env.PUBLIC_URL}/model/KOREA7.png`,
+    `${process.env.PUBLIC_URL}/model/KOREA8.png`,
+    `${process.env.PUBLIC_URL}/model/KOREA9.png`,
+    `${process.env.PUBLIC_URL}/model/KOREA10.png`,
+    `${process.env.PUBLIC_URL}/model/KOREA11.png`,
   ];
 
+  const [ssenseQueue, setSsenseQueue] = useState(shuffleArray(ssenseImages));
+  const [koreaQueue, setKoreaQueue] = useState(shuffleArray(koreaImages));
   const [ssenseIndex, setSsenseIndex] = useState(0);
   const [koreaIndex, setKoreaIndex] = useState(0);
 
-  // cycle images every 2.4s
+  const INTERVAL = 2400; // each image shown for 2.4s
+
   useEffect(() => {
-    const ssenseTimer = setInterval(() => {
-      setSsenseIndex((prev) => (prev + 1) % ssenseImages.length);
-    }, 2400);
+    const interval = setInterval(() => {
+      setSsenseIndex((prev) => {
+        if (prev + 1 < ssenseQueue.length) return prev + 1;
+        setSsenseQueue(shuffleArray(ssenseImages));
+        return 0;
+      });
+      setKoreaIndex((prev) => {
+        if (prev + 1 < koreaQueue.length) return prev + 1;
+        setKoreaQueue(shuffleArray(koreaImages));
+        return 0;
+      });
+    }, INTERVAL);
+    return () => clearInterval(interval);
+  }, [ssenseQueue, koreaQueue]);
 
-    const koreaTimer = setInterval(() => {
-      setKoreaIndex((prev) => (prev + 1) % koreaImages.length);
-    }, 2400);
-
-    return () => {
-      clearInterval(ssenseTimer);
-      clearInterval(koreaTimer);
-    };
-  }, []);
-
-  // video fade + random cycle logic
-  function shuffleArray(array) {
-    const newArr = [...array];
-    for (let i = newArr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
-    }
-    return newArr;
-  }
-
+  // === VIDEO FADE + RANDOM CYCLE ===
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -133,8 +157,8 @@ const Modelling = ({ onBack }) => {
         <h2 className="card-title ssense-font">SSENSE</h2>
         <p className="card-subtitle">Montreal, ON</p>
         <img
-          key={ssenseImages[ssenseIndex]}
-          src={ssenseImages[ssenseIndex]}
+          key={ssenseQueue[ssenseIndex]}
+          src={ssenseQueue[ssenseIndex]}
           alt="SSENSE"
           className="card-image"
         />
@@ -144,13 +168,14 @@ const Modelling = ({ onBack }) => {
         <h2 className="card-title">Seoul, Korea</h2>
         <p className="card-subtitle">Dunst, Heritage Floss & Afterpray</p>
         <img
-          key={koreaImages[koreaIndex]}
-          src={koreaImages[koreaIndex]}
+          key={koreaQueue[koreaIndex]}
+          src={koreaQueue[koreaIndex]}
           alt="Korean Brand"
           className="card-image"
         />
       </div>
 
+      {/* Footer text */}
       <div className="footer-text">
         <div>MA: WANT Management</div>
         <div>IG: MichaelKlmn</div>
