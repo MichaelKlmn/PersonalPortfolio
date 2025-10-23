@@ -299,7 +299,7 @@ const Software = () => {
         {/* Project 3: Playable Pong */}
         <div className="project-card">
           <div className="project-image">
-            <img src="/images/tech/Pong.png" alt="Playable Pong Game" />
+            <img src="/images/tech/PONG.png" alt="Playable Pong Game" />
           </div>
           <div className="project-info">
             <h3 className="project-title">Playable Pong Game</h3>
