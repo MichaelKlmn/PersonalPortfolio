@@ -151,8 +151,14 @@ const Modelling = ({ onBack }) => {
         />
       </div>
 
+      <div className="footer-text">
+        <div>MA: WANT Management</div>
+        <div>IG: MichaelKlmn</div>
+        <div>TikTok: MichaelKlmn</div>
+      </div>
+
       <button className="back-button" onClick={onBack}>
-        ← Back to Home
+        ← Back Home
       </button>
     </div>
   );
