@@ -9,10 +9,43 @@ const Software = () => {
   const heroRef = useRef(null);
   const aboutRef = useRef(null);
   const projectsRef = useRef(null);
+  const contactRef = useRef(null);
 
   const [showStickyNav, setShowStickyNav] = useState(false);
   const [showPong, setShowPong] = useState(false);
   const gameRef = useRef(null);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [status, setStatus] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus("Sending...");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setStatus("Message sent!");
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        setStatus(`${data.error || "Error sending message."}`);
+      }
+    } catch {
+      setStatus("Network error. Please try again later.");
+    }
+  };
 
   useEffect(() => {
     const heroSection = heroRef.current;
@@ -90,6 +123,7 @@ const Software = () => {
           <button onClick={() => scrollToRef(heroRef)}>Home</button>
           <button onClick={() => scrollToRef(aboutRef)}>About</button>
           <button onClick={() => scrollToRef(projectsRef)}>Projects</button>
+          <button onClick={() => scrollToRef(contactRef)}>Contact</button>
         </nav>
       </header>
 
@@ -330,6 +364,40 @@ const Software = () => {
             </motion.div>
           )}
         </AnimatePresence>
+      </section>
+
+      <section className="contact-section" ref={contactRef}>
+        <h2 className="section-heading">
+          <span>Contact Me</span>
+        </h2>
+        <form onSubmit={handleSubmit} className="contact-form">
+          <input
+            type="text"
+            name="name"
+            placeholder="Your Name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Your Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <textarea
+            name="message"
+            placeholder="Your Message"
+            rows="5"
+            value={formData.message}
+            onChange={handleChange}
+            required
+          />
+          <button type="submit">Send Message</button>
+          <p className="form-status">{status}</p>
+        </form>
       </section>
     </div>
   );
