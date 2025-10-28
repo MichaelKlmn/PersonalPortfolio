@@ -285,7 +285,7 @@ const Software = () => {
             </p>
             <div className="project-links">
               <a
-                href="https://github.com/MichaelKlmn/PokeFinder"
+                href="https://github.com/drasov/PokeFinder"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="project-link"
