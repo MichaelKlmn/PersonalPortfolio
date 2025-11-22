@@ -156,19 +156,20 @@ const Software = () => {
           <h2 className="section-heading">
             <span>About</span>
           </h2>
-          <h2 className="about-blurb center-align">
+          <p className="about-blurb center-align">
             As a fourth-year software development bachelor student at Seneca
             Polytechnic, I have a strong interest in creating smart,
             user-focused web & mobile applications.
-            <br></br>
+            <br></br> <br />
             With backend development pushing my critical thinking and problem
             solving skills & frontend allowing me to express my creativity
             through effective designing, I feel as though I am able to have an
-            impact on both sides of the full-stack development.
-            <br></br>To further push myself, I have begun to implement more
-            adaptive UI/UX that stretch both my technical and creative limits by
+            impact on both sides of full-stack development.
+            <br></br> <br />
+            To further push myself, I have begun to implement more adaptive
+            UI/UX that stretch both my technical and creative limits by
             incorporating AI into my projects.
-          </h2>
+          </p>
         </div>
 
         <div className="skills-right">
