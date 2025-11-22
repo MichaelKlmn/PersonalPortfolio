@@ -47,6 +47,7 @@
   z-index: 5;
   backdrop-filter: blur(8px);
   transition: transform 0.3s ease-in-out;
+  height: 300px; /* matches mobile enforced height */
 }
 
 .ssense-card {
@@ -103,17 +104,50 @@
 /* === RESPONSIVE === */
 @media (max-width: 768px) {
   .card {
-    width: 180px;
-    padding: 8px;
-    bottom: 20px;
+    width: 38vw; /* fits two cards with gap */
+    max-width: 180px;
+    height: 260px; /* identical card height */
+    padding: 10px;
+    bottom: 28px;
+  }
+
+  .ssense-card {
+    left: 6vw; /* spacing from left */
+    right: auto;
+  }
+
+  .korea-card {
+    right: 6vw; /* spacing from right */
+    left: auto;
+  }
+
+  .card-image {
+    height: 150px; /* proportional inside fixed card height */
   }
 
   .card-title {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .card-subtitle {
     font-size: 0.7rem;
+  }
+
+  /* footer text placed between cards */
+  .footer-text {
+    bottom: 22vh; /* sits in the gap */
+    font-size: 0.75rem;
+    line-height: 1.25;
+    width: 80vw;
+    text-shadow: 0 0 6px rgba(0, 0, 0, 0.45);
+    pointer-events: none;
+  }
+
+  /* back button adjusted */
+  .back-button {
+    top: 12px;
+    left: 12px;
+    transform: scale(0.9);
   }
 }
 
