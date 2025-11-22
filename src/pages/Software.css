@@ -617,3 +617,96 @@
   font-size: 0.9rem;
   color: var(--muted);
 }
+
+/* === Resume Modal Overlay (Apple Glass Blur) === */
+.resume-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(18px) brightness(0.55);
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* === Modal Container (Minimal White) === */
+.resume-modal {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 14px;
+  padding: 22px;
+  width: 90%;
+  max-width: 820px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+  animation: scaleIn 0.25s ease-out;
+}
+
+/* === PDF Viewer === */
+.resume-frame {
+  width: 100%;
+  height: 75vh;
+  border-radius: 10px;
+  border: none;
+}
+
+/* === Action Buttons (Theme-Matched) === */
+.resume-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.resume-download,
+.resume-close,
+.resume-btn {
+  background: #ff4d6d; /* matches your branding accent */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.resume-download:hover,
+.resume-close:hover,
+.resume-btn:hover {
+  transform: scale(1.05);
+  background: #ff6f85;
+}
+
+/* Mobile Tweaks */
+@media (max-width: 768px) {
+  .resume-frame {
+    height: 65vh;
+  }
+  .resume-actions {
+    flex-direction: column;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.94);
+  }
+  to {
+    transform: scale(1);
+  }
+}

@@ -13,6 +13,8 @@ const Software = () => {
 
   const [showStickyNav, setShowStickyNav] = useState(false);
   const [showPong, setShowPong] = useState(false);
+  const [showResume, setShowResume] = useState(false);
+
   const gameRef = useRef(null);
 
   const [formData, setFormData] = useState({
@@ -401,6 +403,38 @@ const Software = () => {
           <button type="submit">Send Message</button>
           <p className="form-status">{status}</p>
         </form>
+
+        {/* === Resume Button === */}
+        <div style={{ textAlign: "center", marginTop: "32px" }}>
+          <button onClick={() => setShowResume(true)} className="resume-btn">
+            My Resumé
+          </button>
+        </div>
+
+        {/* === Resume Modal (Apple Glass Style) === */}
+        {showResume && (
+          <div className="resume-overlay" onClick={() => setShowResume(false)}>
+            <div className="resume-modal" onClick={(e) => e.stopPropagation()}>
+              <iframe
+                src="/resume.pdf"
+                className="resume-frame"
+                title="Resume Preview"
+              />
+
+              <div className="resume-actions">
+                <a href="/resume.pdf" download className="resume-download">
+                  Download PDF
+                </a>
+                <button
+                  className="resume-close"
+                  onClick={() => setShowResume(false)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );
